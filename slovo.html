@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Слово — Микропрограммноеобеспечение Офис</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #faf9f8; color: #242424; line-height: 1.5; }
+  .topbar { background: #fff; height: 52px; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid #e1e1e1; position: sticky; top: 0; z-index: 100; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; color: #242424; text-decoration: none; white-space: nowrap; margin-right: 24px; }
+  .logo-icon { width: 24px; height: 24px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; flex-shrink: 0; }
+  .logo-icon div { border-radius: 1px; }
+  .logo-icon div:nth-child(1) { background: #0000cc; }
+  .logo-icon div:nth-child(2) { background: #ed1c24; }
+  .logo-icon div:nth-child(3) { background: #22c322; }
+  .logo-icon div:nth-child(4) { background: #3d3d3d; }
+  .topnav { display: flex; gap: 4px; flex: 1; }
+  .topnav a { color: #242424; text-decoration: none; font-size: 13px; padding: 8px 12px; border-radius: 2px; white-space: nowrap; }
+  .topnav a:hover { background: #f3f2f1; }
+  .topnav a.active { font-weight: 600; }
+  .top-actions { display: flex; align-items: center; gap: 16px; }
+  .top-actions a { color: #242424; text-decoration: none; font-size: 13px; white-space: nowrap; }
+  .btn-signin { background: #0000cc; color: #fff !important; padding: 6px 12px; border-radius: 2px; font-weight: 600; }
+  .btn-signin:hover { background: #0000a8; }
+
+  .hero { background: #0b1b2b; color: #fff; padding: 64px 5%; }
+  .hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .crumb { font-size: 12px; color: #8a9aaa; margin-bottom: 16px; }
+  .crumb a { color: #8a9aaa; text-decoration: none; }
+  .crumb a:hover { color: #fff; }
+  .hero h1 { font-size: 42px; font-weight: 600; line-height: 1.15; margin-bottom: 16px; }
+  .hero h1 .accent { color: #4d4dff; }
+  .hero p { font-size: 16px; opacity: 0.85; margin-bottom: 24px; max-width: 480px; }
+  .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 10px 20px; border-radius: 2px; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; border: 1px solid transparent; }
+  .btn-white { background: #fff; color: #0b1b2b; border-color: #fff; }
+  .btn-white:hover { background: #e8e8e8; }
+  .btn-ghost { background: transparent; color: #fff; border-color: #4a5a6a; }
+  .btn-ghost:hover { background: #1a2a3a; }
+
+  .mockup { background: #fff; border-radius: 2px; overflow: hidden; border: 1px solid #2a3a4a; }
+  .mockup-bar { background: #e8e8e8; padding: 8px 12px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #d1d1d1; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .dot.red { background: #ed1c24; } .dot.yellow { background: #febc2e; } .dot.green { background: #22c322; }
+  .mockup-title { font-size: 10px; color: #666; margin-left: 6px; }
+  .mockup-toolbar { background: #faf9f8; border-bottom: 1px solid #e1e1e1; padding: 6px 12px; display: flex; gap: 14px; font-size: 10px; color: #444; }
+  .mockup-toolbar span { font-weight: 600; padding-bottom: 3px; }
+  .mockup-toolbar span.active { color: #0000cc; border-bottom: 2px solid #0000cc; }
+  .mockup-body { padding: 20px 24px; height: 280px; overflow: hidden; }
+  .doc-line { height: 7px; background: #e8e8e8; border-radius: 1px; margin-bottom: 10px; }
+  .doc-line.title { height: 14px; width: 60%; background: #333; margin-bottom: 16px; }
+  .doc-line.short { width: 70%; } .doc-line.shorter { width: 40%; } .doc-line.highlight { background: #0000cc; width: 85%; }
+
+  .section { max-width: 1200px; margin: 0 auto; padding: 64px 5%; }
+  .section-head { max-width: 720px; margin: 0 auto 32px; }
+  .section-head .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #0000cc; margin-bottom: 8px; }
+  .section-head h2 { font-size: 30px; font-weight: 600; line-height: 1.2; margin-bottom: 12px; }
+  .section-head p { font-size: 15px; color: #5f5f5f; }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .feature { background: #fff; border: 1px solid #e1e1e1; border-radius: 2px; padding: 24px; }
+  .feature:hover { border-color: #c1c1c1; }
+  .feature-icon { width: 40px; height: 40px; border-radius: 2px; background: #e8e8ff; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px; }
+  .feature h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .feature p { font-size: 13px; color: #5f5f5f; }
+
+  .formats { background: #fff; border: 1px solid #e1e1e1; border-radius: 2px; padding: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
+  .formats-text h2 { font-size: 26px; font-weight: 600; margin-bottom: 12px; line-height: 1.2; }
+  .formats-text p { font-size: 14px; color: #5f5f5f; margin-bottom: 16px; }
+  .format-list { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+  .format-list li { background: #e8e8ff; color: #0000cc; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 2px; }
+  .formats-visual { display: flex; align-items: center; justify-content: center; }
+
+  .cta { background: #0b1b2b; color: #fff; text-align: center; padding: 64px 5%; }
+  .cta h2 { font-size: 28px; margin-bottom: 12px; font-weight: 600; }
+  .cta p { font-size: 15px; opacity: 0.85; margin-bottom: 24px; }
+
+  footer { background: #f3f2f1; padding: 48px 5% 24px; color: #616161; font-size: 12px; border-top: 1px solid #e1e1e1; }
+  .footer-inner { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 24px; }
+  .footer-col h4 { font-size: 12px; font-weight: 600; color: #242424; margin-bottom: 10px; }
+  .footer-col a { display: block; color: #616161; text-decoration: none; margin-bottom: 6px; }
+  .footer-col a:hover { color: #0000cc; text-decoration: underline; }
+  .footer-bottom { max-width: 1400px; margin: 32px auto 0; padding-top: 16px; border-top: 1px solid #e1e1e1; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 11px; }
+
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 32px; }
+    .hero h1 { font-size: 32px; }
+    .formats { grid-template-columns: 1fr; padding: 24px; }
+    .section-head h2 { font-size: 24px; }
+  }
+  @media (max-width: 640px) {
+    .topnav { display: none; }
+    .hero { padding: 48px 5%; }
+    .hero h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="index.html" class="logo">
+    <div class="logo-icon"><div></div><div></div><div></div><div></div></div>
+    Микропрограммноеобеспечение
+  </a>
+  <nav class="topnav">
+    <a href="index.html">Главная</a>
+    <a href="index.html#office" class="active">Офис</a>
+    <a href="index.html#os">Окна (скоро)</a>
+  </nav>
+  <div class="top-actions">
+    <a href="#">Войти</a>
+    <a href="#" class="btn-signin">Начать</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="crumb">
+        <a href="index.html">Микропрограммноеобеспечение</a> ›
+        <a href="index.html#office">Офис</a> ›
+        <span>Слово</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
+        <img src="img/s.png" alt="Слово" width="48" height="48">
+        <h1 style="margin:0;">Слово.<br><span class="accent">Документы без границ</span></h1>
+      </div>
+      <p>Создавайте тексты, статьи, отчёты и книги в редакторе, который понимает вас. Стили, колонтитулы, совместная работа — всё под контролем.</p>
+      <div class="hero-buttons">
+        <a href="#" class="btn btn-white">Скачать бесплатно</a>
+        <a href="#" class="btn btn-ghost">Открыть в браузере</a>
+      </div>
+    </div>
+
+    <div class="mockup">
+      <div class="mockup-bar">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span class="mockup-title">Слово — Документ1.docx</span>
+      </div>
+      <div class="mockup-toolbar">
+        <span class="active">Главная</span><span>Вставка</span><span>Макет</span><span>Ссылки</span>
+      </div>
+      <div class="mockup-body">
+        <div class="doc-line title"></div>
+        <div class="doc-line"></div>
+        <div class="doc-line short"></div>
+        <div class="doc-line"></div>
+        <div class="doc-line highlight"></div>
+        <div class="doc-line short"></div>
+        <div class="doc-line shorter"></div>
+        <div class="doc-line"></div>
+        <div class="doc-line short"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div class="eyebrow">Возможности</div>
+    <h2>Всё для идеального документа</h2>
+    <p>От простой заметки до книги на 500 страниц — Слово справится с любым объёмом.</p>
+  </div>
+  <div class="features">
+    <div class="feature"><div class="feature-icon">📝</div><h3>Умные стили</h3><p>Автоматическое оформление заголовков, списков и цитат в один клик.</p></div>
+    <div class="feature"><div class="feature-icon">👥</div><h3>Совместная работа</h3><p>Редактируйте документ вместе с коллегами в реальном времени.</p></div>
+    <div class="feature"><div class="feature-icon">💬</div><h3>Комментарии</h3><p>Оставляйте заметки и обсуждайте правки прямо в документе.</p></div>
+    <div class="feature"><div class="feature-icon">🔍</div><h3>Умный поиск</h3><p>Ищет не только слова, но и смысл — находит нужное быстрее.</p></div>
+    <div class="feature"><div class="feature-icon">📄</div><h3>Шаблоны</h3><p>Резюме, письма, отчёты — готовые макеты на любой случай.</p></div>
+    <div class="feature"><div class="feature-icon">🔒</div><h3>Защита</h3><p>Шифрование документов и защита паролем.</p></div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="formats">
+    <div class="formats-text">
+      <h2>Совместимость с .docx</h2>
+      <p>Открывайте и сохраняйте файлы Microsoft Word без потерь. Форматирование, таблицы, изображения и стили сохраняются в точности.</p>
+      <ul class="format-list">
+        <li>.docx</li><li>.doc</li><li>.rtf</li><li>.txt</li><li>.pdf</li><li>.odt</li>
+      </ul>
+    </div>
+    <div class="formats-visual">
+      <img src="img/s.png" alt="Слово" width="160" height="160">
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>Начните писать в Слове</h2>
+  <p>Бесплатно. Без подписок. Ваши документы — навсегда ваши.</p>
+  <a href="#" class="btn btn-white">Скачать Слово</a>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col"><h4>Офис</h4><a href="slovo.html">Слово</a><a href="pryevoshodit.html">Превосходить</a><a href="tochkasily.html">ТочкаСилы</a></div>
+    <div class="footer-col"><h4>Операционная система</h4><a href="index.html#os">Микропрограммноеобеспечение Окна</a><a href="#">Лист ожидания</a><a href="#">Дорожная карта</a></div>
+    <div class="footer-col"><h4>Компания</h4><a href="#">О нас</a><a href="#">Блог</a><a href="#">Карьера</a></div>
+    <div class="footer-col"><h4>Поддержка</h4><a href="#">Помощь</a><a href="#">Документация</a><a href="#">Связаться</a></div>
+    <div class="footer-col"><h4>Правовое</h4><a href="#">Конфиденциальность</a><a href="#">Условия</a><a href="#">Лицензия</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 Микропрограммноеобеспечение. Все права защищены.</span><span>Офис · Окна — скоро</span></div>
+</footer>
+</body>
+</html>

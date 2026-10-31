@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Микропрограммноеобеспечение</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #faf9f8; color: #242424; line-height: 1.5; }
+
+  /* --- ТОП-БАР --- */
+  .topbar {
+    background: #fff;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    border-bottom: 1px solid #e1e1e1;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; color: #242424; text-decoration: none; white-space: nowrap; margin-right: 24px; }
+  .logo-icon { width: 24px; height: 24px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; flex-shrink: 0; }
+  .logo-icon div { border-radius: 1px; }
+  .logo-icon div:nth-child(1) { background: #0000cc; }
+  .logo-icon div:nth-child(2) { background: #ed1c24; }
+  .logo-icon div:nth-child(3) { background: #22c322; }
+  .logo-icon div:nth-child(4) { background: #3d3d3d; }
+  .topnav { display: flex; gap: 4px; flex: 1; }
+  .topnav a { color: #242424; text-decoration: none; font-size: 13px; padding: 8px 12px; border-radius: 2px; white-space: nowrap; }
+  .topnav a:hover { background: #f3f2f1; }
+  .topnav a.active { font-weight: 600; }
+  .top-actions { display: flex; align-items: center; gap: 16px; }
+  .top-actions a { color: #242424; text-decoration: none; font-size: 13px; white-space: nowrap; }
+  .btn-signin { background: #0000cc; color: #fff !important; padding: 6px 12px; border-radius: 2px; font-weight: 600; }
+  .btn-signin:hover { background: #0000a8; }
+
+  /* --- HERO (плоский) --- */
+  .hero { background: #0b1b2b; color: #fff; padding: 80px 5%; }
+  .hero-inner { max-width: 900px; margin: 0 auto; }
+  .hero .tag { display: inline-block; background: #1a2a3a; color: #fff; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 2px; margin-bottom: 16px; letter-spacing: 0.5px; border: 1px solid #2a3a4a; }
+  .hero h1 { font-size: 42px; font-weight: 600; line-height: 1.2; margin-bottom: 16px; }
+  .hero h1 .accent { color: #4d4dff; }
+  .hero p { font-size: 17px; opacity: 0.85; margin-bottom: 28px; max-width: 680px; }
+  .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 10px 20px; border-radius: 2px; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: background 0.15s; }
+  .btn-white { background: #fff; color: #0b1b2b; border-color: #fff; }
+  .btn-white:hover { background: #e8e8e8; }
+  .btn-ghost { background: transparent; color: #fff; border-color: #4a5a6a; }
+  .btn-ghost:hover { background: #1a2a3a; }
+
+  /* --- СЕКЦИИ --- */
+  .section { max-width: 1400px; margin: 0 auto; padding: 64px 5%; }
+  .section-head { max-width: 720px; margin: 0 auto 40px; text-align: left; }
+  .section-head .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #0000cc; margin-bottom: 8px; }
+  .section-head h2 { font-size: 32px; font-weight: 600; line-height: 1.2; margin-bottom: 12px; }
+  .section-head p { font-size: 16px; color: #5f5f5f; }
+
+  /* --- ПРОДУКТЫ (плоские карточки) --- */
+  .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .product { background: #fff; border: 1px solid #e1e1e1; border-radius: 2px; padding: 24px; display: flex; flex-direction: column; }
+  .product:hover { border-color: #c1c1c1; }
+  .product-icon { width: 48px; height: 48px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; }
+  .product-icon img { display: block; }
+  .product h3 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .product .sub { font-size: 12px; font-weight: 600; color: #5f5f5f; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+  .product p { font-size: 14px; color: #5f5f5f; flex: 1; margin-bottom: 16px; }
+  .product-link { font-size: 14px; font-weight: 600; color: #0000cc; text-decoration: none; }
+  .product-link:hover { text-decoration: underline; }
+
+  /* --- ОС-БЛОК (плоский) --- */
+  .os-block { background: #0b1b2b; color: #fff; border: 1px solid #2a3a4a; border-radius: 2px; padding: 48px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; margin-top: 64px; }
+  .os-text .tag { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1px solid #ffb900; color: #ffb900; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 2px; margin-bottom: 16px; }
+  .tag-dot { width: 6px; height: 6px; border-radius: 50%; background: #ffb900; }
+  .os-text h2 { font-size: 30px; font-weight: 600; line-height: 1.2; margin-bottom: 12px; }
+  .os-text h2 .accent { color: #4d4dff; }
+  .os-text p { font-size: 15px; opacity: 0.85; margin-bottom: 20px; }
+  .os-features { list-style: none; margin-bottom: 24px; }
+  .os-features li { font-size: 14px; opacity: 0.85; padding-left: 20px; position: relative; margin-bottom: 8px; }
+  .os-features li::before { content: "—"; position: absolute; left: 0; color: #4d4dff; }
+  .os-mockup { background: #1a2a3a; border: 1px solid #2a3a4a; border-radius: 2px; padding: 24px; }
+  .os-window { background: #fff; border-radius: 2px; overflow: hidden; }
+  .os-window-bar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: #e8e8e8; border-bottom: 1px solid #d1d1d1; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .dot.red { background: #ed1c24; } .dot.yellow { background: #febc2e; } .dot.green { background: #22c322; }
+  .os-window-title { margin-left: auto; margin-right: auto; font-size: 10px; color: #666; }
+  .os-desktop { height: 160px; background: #0b1b2b; position: relative; padding: 16px; }
+  .os-desktop .os-logo-mini { width: 32px; height: 32px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; }
+  .os-desktop .os-logo-mini div { border-radius: 1px; }
+  .os-desktop .os-logo-mini div:nth-child(1) { background: #0000cc; }
+  .os-desktop .os-logo-mini div:nth-child(2) { background: #ed1c24; }
+  .os-desktop .os-logo-mini div:nth-child(3) { background: #22c322; }
+  .os-desktop .os-logo-mini div:nth-child(4) { background: #3d3d3d; }
+  .os-taskbar { position: absolute; bottom: 0; left: 0; right: 0; height: 28px; background: #1a2a3a; display: flex; align-items: center; justify-content: center; gap: 12px; border-top: 1px solid #2a3a4a; }
+  .os-taskbar span { width: 14px; height: 14px; border-radius: 2px; background: #4a5a6a; }
+
+  /* --- CTA --- */
+  .cta { background: #0b1b2b; color: #fff; text-align: center; padding: 64px 5%; }
+  .cta h2 { font-size: 28px; margin-bottom: 12px; font-weight: 600; }
+  .cta p { font-size: 16px; opacity: 0.85; margin-bottom: 24px; }
+
+  /* --- ФУТЕР --- */
+  footer { background: #f3f2f1; padding: 48px 5% 24px; color: #616161; font-size: 12px; border-top: 1px solid #e1e1e1; }
+  .footer-inner { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 24px; }
+  .footer-col h4 { font-size: 12px; font-weight: 600; color: #242424; margin-bottom: 10px; }
+  .footer-col a { display: block; color: #616161; text-decoration: none; margin-bottom: 6px; }
+  .footer-col a:hover { color: #0000cc; text-decoration: underline; }
+  .footer-bottom { max-width: 1400px; margin: 32px auto 0; padding-top: 16px; border-top: 1px solid #e1e1e1; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 11px; }
+
+  @media (max-width: 900px) {
+    .os-block { grid-template-columns: 1fr; padding: 32px; }
+    .hero h1 { font-size: 32px; }
+    .section-head h2 { font-size: 26px; }
+  }
+  @media (max-width: 640px) {
+    .topnav { display: none; }
+    .hero { padding: 48px 5%; }
+    .hero h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="index.html" class="logo">
+    <div class="logo-icon"><div></div><div></div><div></div><div></div></div>
+    Микропрограммноеобеспечение
+  </a>
+  <nav class="topnav">
+    <a href="index.html" class="active">Главная</a>
+    <a href="#office">Офис</a>
+    <a href="#os">Окна (скоро)</a>
+  </nav>
+  <div class="top-actions">
+    <a href="#">Войти</a>
+    <a href="#" class="btn-signin">Начать</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <span class="tag">ЭКОСИСТЕМА ПРОДУКТОВ</span>
+    <h1>Один пакет.<br><span class="accent">Вся цифровая жизнь.</span></h1>
+    <p>Микропрограммноеобеспечение — это семейство программ: офисный пакет «Офис» и скоро — операционная система Микропрограммноеобеспечение Окна.</p>
+    <div class="hero-buttons">
+      <a href="#office" class="btn btn-white">Смотреть Офис</a>
+      <a href="#os" class="btn btn-ghost">Окна — скоро</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="office">
+  <div class="section-head">
+    <div class="eyebrow">Микропрограммноеобеспечение Офис</div>
+    <h2>Три инструмента — один пакет</h2>
+    <p>Знакомые программы — переосмысленные. Всё совместимо между собой и с форматами, к которым вы привыкли.</p>
+  </div>
+
+  <div class="products">
+    <div class="product">
+      <div class="product-icon"><img src="img/s.png" alt="Слово" width="48" height="48"></div>
+      <h3>Слово</h3>
+      <div class="sub">Документы</div>
+      <p>Редактор документов с поддержкой стилей, колонтитулов и совместного редактирования в реальном времени.</p>
+      <a href="slovo.html" class="product-link">Открыть →</a>
+    </div>
+
+    <div class="product">
+      <div class="product-icon"><img src="img/p.png" alt="Превосходить" width="48" height="48"></div>
+      <h3>Превосходить</h3>
+      <div class="sub">Таблицы</div>
+      <p>Электронные таблицы с формулами, сводными таблицами и графиками. Работает с .xlsx без потерь.</p>
+      <a href="pryevoshodit.html" class="product-link">Открыть →</a>
+    </div>
+
+    <div class="product">
+      <div class="product-icon"><img src="img/ts.png" alt="ТочкаСилы" width="48" height="48"></div>
+      <h3>ТочкаСилы</h3>
+      <div class="sub">Презентации</div>
+      <p>Лёгкий аналог PowerPoint: умные шаблоны, плавные переходы и экспорт в PDF, PNG и MP4 за секунды.</p>
+      <a href="tochkasily.html" class="product-link">Открыть →</a>
+    </div>
+  </div>
+
+  <div class="os-block" id="os">
+    <div class="os-text">
+      <span class="tag"><span class="tag-dot"></span>СКОРО</span>
+      <h2>Микропрограммноеобеспечение <span class="accent">Окна</span></h2>
+      <p>Мы строим операционную систему, которая объединит всю экосистему Микропрограммноеобеспечение. Быстрая, безопасная и заточенная под работу с документами и презентациями.</p>
+      <ul class="os-features">
+        <li>Единая учётная запись для всех устройств</li>
+        <li>Встроенный пакет Офис</li>
+        <li>Мгновенный запуск и низкое энергопотребление</li>
+        <li>Обновления без перезагрузки</li>
+      </ul>
+      <a href="#" class="btn btn-white">Записаться в лист ожидания</a>
+    </div>
+    <div class="os-mockup">
+      <div class="os-window">
+        <div class="os-window-bar">
+          <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+          <span class="os-window-title">Микропрограммноеобеспечение Окна — рабочий стол</span>
+        </div>
+        <div class="os-desktop">
+          <div class="os-logo-mini"><div></div><div></div><div></div><div></div></div>
+          <div class="os-taskbar"><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>Присоединяйтесь к экосистеме</h2>
+  <p>Начните с пакета Офис — а когда выйдут Окна, вы будете первыми.</p>
+  <a href="#" class="btn btn-white">Начать бесплатно</a>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col"><h4>Офис</h4><a href="slovo.html">Слово</a><a href="pryevoshodit.html">Превосходить</a><a href="tochkasily.html">ТочкаСилы</a></div>
+    <div class="footer-col"><h4>Операционная система</h4><a href="#os">Микропрограммноеобеспечение Окна</a><a href="#">Лист ожидания</a><a href="#">Дорожная карта</a></div>
+    <div class="footer-col"><h4>Компания</h4><a href="#">О нас</a><a href="#">Блог</a><a href="#">Карьера</a></div>
+    <div class="footer-col"><h4>Поддержка</h4><a href="#">Помощь</a><a href="#">Документация</a><a href="#">Связаться</a></div>
+    <div class="footer-col"><h4>Правовое</h4><a href="#">Конфиденциальность</a><a href="#">Условия</a><a href="#">Лицензия</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 Микропрограммноеобеспечение. Все права защищены.</span><span>Офис · Окна — скоро</span></div>
+</footer>
+</body>
+</html>

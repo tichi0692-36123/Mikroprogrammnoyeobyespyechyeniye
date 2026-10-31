@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Скачать ТочкаСилы — Микропрограммноеобеспечение</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #faf9f8; color: #242424; line-height: 1.5; }
+  .topbar { background: #fff; height: 52px; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid #e1e1e1; position: sticky; top: 0; z-index: 100; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; color: #242424; text-decoration: none; white-space: nowrap; margin-right: 24px; }
+  .logo-icon { width: 24px; height: 24px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; flex-shrink: 0; }
+  .logo-icon div { border-radius: 1px; }
+  .logo-icon div:nth-child(1) { background: #0000cc; }
+  .logo-icon div:nth-child(2) { background: #ed1c24; }
+  .logo-icon div:nth-child(3) { background: #22c322; }
+  .logo-icon div:nth-child(4) { background: #3d3d3d; }
+  .topnav { display: flex; gap: 4px; flex: 1; }
+  .topnav a { color: #242424; text-decoration: none; font-size: 13px; padding: 8px 12px; border-radius: 2px; white-space: nowrap; }
+  .topnav a:hover { background: #f3f2f1; }
+  .topnav a.active { font-weight: 600; }
+  .top-actions { display: flex; align-items: center; gap: 16px; }
+  .top-actions a { color: #242424; text-decoration: none; font-size: 13px; white-space: nowrap; }
+  .btn-signin { background: #0000cc; color: #fff !important; padding: 6px 12px; border-radius: 2px; font-weight: 600; }
+  .btn-signin:hover { background: #0000a8; }
+
+  .hero { background: #0b1b2b; color: #fff; padding: 48px 5%; }
+  .hero-inner { max-width: 900px; margin: 0 auto; }
+  .crumb { font-size: 12px; color: #8a9aaa; margin-bottom: 16px; }
+  .crumb a { color: #8a9aaa; text-decoration: none; }
+  .crumb a:hover { color: #fff; }
+  .hero h1 { font-size: 36px; font-weight: 600; line-height: 1.2; margin-bottom: 12px; }
+  .hero p { font-size: 15px; opacity: 0.85; max-width: 600px; }
+
+  .section { max-width: 1000px; margin: 0 auto; padding: 48px 5%; }
+  .download-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+
+  .download-card {
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    border-radius: 2px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+  }
+  .download-card:hover { border-color: #c1c1c1; }
+  .download-card .os-icon {
+    width: 40px; height: 40px;
+    background: #f3f2f1;
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+  .download-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+  .download-card .version { font-size: 11px; color: #5f5f5f; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 12px; }
+  .download-card p { font-size: 13px; color: #5f5f5f; flex: 1; margin-bottom: 16px; }
+  .download-card a {
+    display: inline-block;
+    background: #0000cc;
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 2px;
+    text-align: center;
+  }
+  .download-card a:hover { background: #0000a8; }
+  .download-card a.secondary {
+    background: #fff;
+    color: #0000cc;
+    border: 1px solid #0000cc;
+  }
+  .download-card a.secondary:hover { background: #e8e8ff; }
+
+  .info-block {
+    margin-top: 32px;
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    border-radius: 2px;
+    padding: 24px;
+  }
+  .info-block h2 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+  .info-block ul { list-style: none; }
+  .info-block li { font-size: 13px; color: #5f5f5f; padding-left: 16px; position: relative; margin-bottom: 6px; }
+  .info-block li::before { content: "—"; position: absolute; left: 0; color: #0000cc; }
+
+  footer { background: #f3f2f1; padding: 48px 5% 24px; color: #616161; font-size: 12px; border-top: 1px solid #e1e1e1; margin-top: 48px; }
+  .footer-inner { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 24px; }
+  .footer-col h4 { font-size: 12px; font-weight: 600; color: #242424; margin-bottom: 10px; }
+  .footer-col a { display: block; color: #616161; text-decoration: none; margin-bottom: 6px; }
+  .footer-col a:hover { color: #0000cc; text-decoration: underline; }
+  .footer-bottom { max-width: 1400px; margin: 32px auto 0; padding-top: 16px; border-top: 1px solid #e1e1e1; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 11px; }
+
+  @media (max-width: 640px) {
+    .topnav { display: none; }
+    .hero { padding: 32px 5%; }
+    .hero h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="index.html" class="logo">
+    <div class="logo-icon"><div></div><div></div><div></div><div></div></div>
+    Микропрограммноеобеспечение
+  </a>
+  <nav class="topnav">
+    <a href="index.html">Главная</a>
+    <a href="index.html#office" class="active">Офис</a>
+    <a href="index.html#os">Окна (скоро)</a>
+  </nav>
+  <div class="top-actions">
+    <a href="#">Войти</a>
+    <a href="#" class="btn-signin">Начать</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="crumb">
+      <a href="index.html">Микропрограммноеобеспечение</a> ›
+      <a href="index.html#office">Офис</a> ›
+      <a href="tochkasily.html">ТочкаСилы</a> ›
+      <span>Скачать</span>
+    </div>
+    <h1>Скачать ТочкаСилы</h1>
+    <p>Выберите вашу операционную систему. Установщик займёт пару минут, а приложение запустится сразу после установки.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="download-grid">
+
+    <div class="download-card">
+      <div class="os-icon">🪟</div>
+      <h3>Windows 10</h3>
+      <div class="version">Версия 1.0.0</div>
+      <p>Архив с установщиком для Windows 10 (64-бит). Требуется 200 МБ свободного места.</p>
+      <a href="downloads/tsforwin10.zip" download>Скачать .zip</a>
+    </div>
+
+    <div class="download-card">
+      <div class="os-icon">🪟</div>
+      <h3>Windows 11</h3>
+      <div class="version">Версия 1.0.0</div>
+      <p>Архив с установщиком для Windows 11 (64-бит). Требуется 200 МБ свободного места.</p>
+      <a href="downloads/tsforwin11.zip" download>Скачать .zip</a>
+    </div>
+
+    <div class="download-card">
+      <div class="os-icon">🍏</div>
+      <h3>macOS</h3>
+      <div class="version">Версия 1.0.0</div>
+      <p>Архив с установщиком для macOS 11 Big Sur и новее. Универсальный бинарник (Intel + Apple Silicon).</p>
+      <a href="downloads/tsformac.zip" download>Скачать .zip</a>
+    </div>
+
+    <div class="download-card">
+      <div class="os-icon">💾</div>
+      <h3>Portable Windows</h3>
+      <div class="version">Версия 1.0.0</div>
+      <p>Портативная версия для Windows. Не требует установки — распакуйте архив и запустите приложение.</p>
+      <a href="downloads/tsportable.zip" download class="secondary">Скачать .zip</a>
+    </div>
+
+  </div>
+
+  <div class="info-block">
+    <h2>Системные требования</h2>
+    <ul>
+      <li>Windows 10/11 (64-бит) или macOS 11+</li>
+      <li>4 ГБ оперативной памяти (рекомендуется 8 ГБ)</li>
+      <li>200 МБ свободного места на диске</li>
+      <li>Разрешение экрана 1280×720 или выше</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col"><h4>Офис</h4><a href="slovo.html">Слово</a><a href="pryevoshodit.html">Превосходить</a><a href="tochkasily.html">ТочкаСилы</a></div>
+    <div class="footer-col"><h4>Операционная система</h4><a href="index.html#os">Микропрограммноеобеспечение Окна</a><a href="#">Лист ожидания</a><a href="#">Дорожная карта</a></div>
+    <div class="footer-col"><h4>Компания</h4><a href="#">О нас</a><a href="#">Блог</a><a href="#">Карьера</a></div>
+    <div class="footer-col"><h4>Поддержка</h4><a href="#">Помощь</a><a href="#">Документация</a><a href="#">Связаться</a></div>
+    <div class="footer-col"><h4>Правовое</h4><a href="#">Конфиденциальность</a><a href="#">Условия</a><a href="#">Лицензия</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 Микропрограммноеобеспечение. Все права защищены.</span><span>Офис · Окна — скоро</span></div>
+</footer>
+</body>
+</html>
