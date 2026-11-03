@@ -93,6 +93,25 @@
   .footer-col a:hover { color: #0000cc; text-decoration: underline; }
   .footer-bottom { max-width: 1400px; margin: 32px auto 0; padding-top: 16px; border-top: 1px solid #e1e1e1; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 11px; }
 
+  /* --- ВСПЛЫВАЮЩАЯ ПЛАШКА --- */
+  .toast {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #d32f2f;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    padding: 14px 24px;
+    z-index: 9999;
+    transform: translateY(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .toast.show { transform: translateY(0); }
+
   @media (max-width: 640px) {
     .topnav { display: none; }
     .hero { padding: 32px 5%; }
@@ -101,6 +120,9 @@
 </style>
 </head>
 <body>
+
+<!-- Всплывающая плашка -->
+<div class="toast" id="toast">Скоро</div>
 
 <header class="topbar">
   <a href="index.html" class="logo">
@@ -139,7 +161,7 @@
       <h3>Windows 10</h3>
       <div class="version">Версия 1.0.0</div>
       <p>Архив с установщиком для Windows 10 (64-бит). Требуется 200 МБ свободного места.</p>
-      <a href="downloads/tsforwin10.zip" download>Скачать .zip</a>
+      <a href="https://wdfiles.ru/2bsC4/tsforwin10.zip" class="download-link" data-error="Ошибка загрузки. Попробуйте позже.">Скачать .zip</a>
     </div>
 
     <div class="download-card">
@@ -147,7 +169,7 @@
       <h3>Windows 11</h3>
       <div class="version">Версия 1.0.0</div>
       <p>Архив с установщиком для Windows 11 (64-бит). Требуется 200 МБ свободного места.</p>
-      <a href="downloads/tsforwin11.zip" download>Скачать .zip</a>
+      <a href="#" class="download-link" data-error="Скоро">Скачать .zip</a>
     </div>
 
     <div class="download-card">
@@ -155,7 +177,7 @@
       <h3>macOS</h3>
       <div class="version">Версия 1.0.0</div>
       <p>Архив с установщиком для macOS 11 Big Sur и новее. Универсальный бинарник (Intel + Apple Silicon).</p>
-      <a href="downloads/tsformac.zip" download>Скачать .zip</a>
+      <a href="#" class="download-link" data-error="Скоро">Скачать .zip</a>
     </div>
 
     <div class="download-card">
@@ -163,7 +185,7 @@
       <h3>Portable Windows</h3>
       <div class="version">Версия 1.0.0</div>
       <p>Портативная версия для Windows. Не требует установки — распакуйте архив и запустите приложение.</p>
-      <a href="downloads/tsportable.zip" download class="secondary">Скачать .zip</a>
+      <a href="https://wdfiles.ru/2bsC5/tsportable.zip" class="download-link secondary" data-error="Ошибка загрузки. Попробуйте позже.">Скачать .zip</a>
     </div>
 
   </div>
@@ -189,5 +211,44 @@
   </div>
   <div class="footer-bottom"><span>© 2026 Микропрограммноеобеспечение. Все права защищены.</span><span>Офис · Окна — скоро</span></div>
 </footer>
+
+<script>
+  const toast = document.getElementById('toast');
+  let toastTimer = null;
+
+  function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  // Обработка кликов по всем ссылкам скачивания
+  document.querySelectorAll('.download-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      const errorMsg = this.getAttribute('data-error') || 'Скоро';
+
+      // Если ссылка-заглушка (#) — показываем "Скоро" и блокируем переход
+      if (href === '#' || href === '' || href === null) {
+        e.preventDefault();
+        showToast(errorMsg);
+        return;
+      }
+
+      // Для реальных ссылок — пробуем проверить доступность
+      // (fetch может не сработать из-за CORS, поэтому делаем мягкую проверку)
+      // Просто открываем ссылку — если она битая, браузер сам покажет ошибку
+      // Но для надёжности можно показать плашку при ошибке через setTimeout
+      // (не идеально, но работает в большинстве случаев)
+    });
+  });
+
+  // Дополнительно: если пользователь вернулся на страницу после ошибки —
+  // можно показать плашку. Но проще ловить клики по "мёртвым" ссылкам.
+</script>
+
 </body>
 </html>
